@@ -36,7 +36,7 @@ const Projects = () => {
       console.log("Fetched projects:", res.data); // Debug log
       setProjects(res.data);
     } catch (err) {
-      console.error("Fetch projects error:", err.response?.data);
+      console.error("Fetch projects error:", err.response?.data || err.message);
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         navigate("/login");
@@ -57,14 +57,15 @@ const Projects = () => {
     setError("");
     try {
       const payload = { title, description: description || "" };
-      await api.post("/api/projects", payload, {
+      const res = await api.post("/api/projects", payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+      console.log("Created project:", res.data); // Debug log
       setTitle("");
       setDescription("");
       fetchProjects();
     } catch (err) {
-      console.error("Create project error:", err.response?.data);
+      console.error("Create project error:", err.response?.data || err.message);
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         navigate("/login");
@@ -79,12 +80,13 @@ const Projects = () => {
     setLoading(true);
     setError("");
     try {
-      await api.delete(`/api/projects/${projectId}`, {
+      const res = await api.delete(`/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+      console.log("Deleted project:", res.data); // Debug log
       fetchProjects();
     } catch (err) {
-      console.error("Delete project error:", err.response?.data);
+      console.error("Delete project error:", err.response?.data || err.message);
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         navigate("/login");
