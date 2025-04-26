@@ -34,6 +34,8 @@ const Tasks = () => {
   const fetchTasks = async () => {
     setLoading(true);
     setError("");
+    const token = localStorage.getItem("token");
+    console.log("Token before fetching tasks:", token); // Debug log
     try {
       console.log("Fetching tasks for project:", projectId);
       const res = await api.get(`/tasks/project/${projectId}`);
@@ -41,9 +43,13 @@ const Tasks = () => {
       setTasks(res.data);
     } catch (err) {
       console.error("Fetch tasks error:", err.response?.data);
+      console.log("Error status:", err.response?.status); // Debug log
       if (err.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login");
+        // localStorage.removeItem("token");
+        // navigate("/login");
+        console.log(
+          "401 Unauthorized - Token invalid or missing, not redirecting for now"
+        );
       }
       setError(err.response?.data?.message || "Failed to fetch tasks.");
     } finally {
@@ -80,8 +86,9 @@ const Tasks = () => {
     } catch (err) {
       console.error("Submit task error:", err.response?.data);
       if (err.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login");
+        // localStorage.removeItem("token");
+        // navigate("/login");
+        console.log("401 Unauthorized on submit - Token invalid or missing");
       }
       setError(
         err.response?.data?.message ||
@@ -110,8 +117,9 @@ const Tasks = () => {
     } catch (err) {
       console.error("Delete task error:", err.response?.data);
       if (err.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login");
+        // localStorage.removeItem("token");
+        // navigate("/login");
+        console.log("401 Unauthorized on delete - Token invalid or missing");
       }
       setError(err.response?.data?.message || "Failed to delete task.");
     } finally {
