@@ -44,6 +44,7 @@ const Tasks = () => {
     } catch (err) {
       console.error("Fetch tasks error:", err.response?.data);
       console.log("Error status:", err.response?.status); // Debug log
+      console.log("Full error:", err); // Debug full error object
       if (err.response?.status === 401) {
         console.log(
           "401 Unauthorized - Token invalid or missing, not redirecting for now"
