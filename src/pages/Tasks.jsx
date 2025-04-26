@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../services/api"; // Import the configured axios instance
+import api from "../services/api";
 import { format, isValid } from "date-fns";
 import {
   Container,
@@ -34,27 +34,20 @@ const Tasks = () => {
   const fetchTasks = async () => {
     setLoading(true);
     setError("");
-    const token = localStorage.getItem("token");
-    console.log("Token before fetching tasks:", token); // Debug log
     try {
-      console.log("Fetching tasks for project:", projectId);
       const res = await api.get(`/tasks/project/${projectId}`);
-      console.log("Fetched tasks:", res.data);
       setTasks(res.data);
     } catch (err) {
-      console.error("Fetch tasks error:", err.response?.data);
-      console.log("Error status:", err.response?.status); // Debug log
-      console.log("Full error:", err); // Debug full error object
       if (err.response?.status === 401) {
-        console.log(
-          "401 Unauthorized - Token invalid or missing, not redirecting for now"
-        );
+        localStorage.removeItem("token");
+        navigate("/login");
       }
       setError(err.response?.data?.message || "Failed to fetch tasks.");
     } finally {
       setLoading(false);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
@@ -70,7 +63,6 @@ const Tasks = () => {
         status,
         projectId,
       };
-      console.log("Submitting payload:", payload);
       if (editingTask) {
         await api.put(`/tasks/${editingTask._id}`, payload);
       } else {
@@ -82,11 +74,9 @@ const Tasks = () => {
       setEditingTask(null);
       fetchTasks();
     } catch (err) {
-      console.error("Submit task error:", err.response?.data);
       if (err.response?.status === 401) {
-        // localStorage.removeItem("token");
-        // navigate("/login");
-        console.log("401 Unauthorized on submit - Token invalid or missing");
+        localStorage.removeItem("token");
+        navigate("/login");
       }
       setError(
         err.response?.data?.message ||
@@ -109,15 +99,12 @@ const Tasks = () => {
     setLoading(true);
     setError("");
     try {
-      console.log("Deleting task:", taskId);
       await api.delete(`/tasks/${taskId}`);
       fetchTasks();
     } catch (err) {
-      console.error("Delete task error:", err.response?.data);
       if (err.response?.status === 401) {
-        // localStorage.removeItem("token");
-        // navigate("/login");
-        console.log("401 Unauthorized on delete - Token invalid or missing");
+        localStorage.removeItem("token");
+        navigate("/login");
       }
       setError(err.response?.data?.message || "Failed to delete task.");
     } finally {
@@ -135,7 +122,6 @@ const Tasks = () => {
 
   const formatDate = (date) => {
     if (!date || !isValid(new Date(date))) {
-      console.log("Invalid date:", date);
       return "N/A";
     }
     return format(new Date(date), "MMM d, yyyy, h:mm a");
