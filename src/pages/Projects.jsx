@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api"; // Use the API service
 import {
   Container,
   Typography,
@@ -30,7 +30,7 @@ const Projects = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.get("http://localhost:5000/api/projects", {
+      const res = await api.get("/api/projects", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       console.log("Fetched projects:", res.data); // Debug log
@@ -57,7 +57,7 @@ const Projects = () => {
     setError("");
     try {
       const payload = { title, description: description || "" };
-      await axios.post("http://localhost:5000/api/projects", payload, {
+      await api.post("/api/projects", payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setTitle("");
@@ -79,7 +79,7 @@ const Projects = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
+      await api.delete(`/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       fetchProjects();
