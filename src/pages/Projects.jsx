@@ -30,7 +30,8 @@ const Projects = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await api.get("/api/projects", {
+      const res = await api.get("/projects", {
+        // Remove extra /api
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       console.log("Fetched projects:", res.data); // Debug log
@@ -57,7 +58,8 @@ const Projects = () => {
     setError("");
     try {
       const payload = { title, description: description || "" };
-      const res = await api.post("/api/projects", payload, {
+      const res = await api.post("/projects", payload, {
+        // Remove extra /api
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       console.log("Created project:", res.data); // Debug log
@@ -80,7 +82,8 @@ const Projects = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await api.delete(`/api/projects/${projectId}`, {
+      const res = await api.delete(`/projects/${projectId}`, {
+        // Remove extra /api
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       console.log("Deleted project:", res.data); // Debug log
