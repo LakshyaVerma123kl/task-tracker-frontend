@@ -45,8 +45,6 @@ const Tasks = () => {
       console.error("Fetch tasks error:", err.response?.data);
       console.log("Error status:", err.response?.status); // Debug log
       if (err.response?.status === 401) {
-        // localStorage.removeItem("token");
-        // navigate("/login");
         console.log(
           "401 Unauthorized - Token invalid or missing, not redirecting for now"
         );
@@ -56,7 +54,6 @@ const Tasks = () => {
       setLoading(false);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
