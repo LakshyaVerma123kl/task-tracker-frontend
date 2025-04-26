@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api"; // Import the configured axios instance
 import { format, isValid } from "date-fns";
 import {
   Container,
@@ -35,12 +35,8 @@ const Tasks = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/tasks/project/${projectId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      console.log("Fetching tasks for project:", projectId);
+      const res = await api.get(`/tasks/project/${projectId}`);
       console.log("Fetched tasks:", res.data);
       setTasks(res.data);
     } catch (err) {
@@ -72,19 +68,9 @@ const Tasks = () => {
       };
       console.log("Submitting payload:", payload);
       if (editingTask) {
-        await axios.put(
-          `http://localhost:5000/api/tasks/${editingTask._id}`,
-          payload,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        await api.put(`/tasks/${editingTask._id}`, payload);
       } else {
-        await axios.post("http://localhost:5000/api/tasks", payload, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        await api.post("/tasks", payload);
       }
       setTitle("");
       setDescription("");
@@ -98,9 +84,8 @@ const Tasks = () => {
         navigate("/login");
       }
       setError(
-        err.response?.data?.message || editingTask
-          ? "Failed to update task."
-          : "Failed to create task."
+        err.response?.data?.message ||
+          (editingTask ? "Failed to update task." : "Failed to create task.")
       );
     } finally {
       setLoading(false);
@@ -119,9 +104,8 @@ const Tasks = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      console.log("Deleting task:", taskId);
+      await api.delete(`/tasks/${taskId}`);
       fetchTasks();
     } catch (err) {
       console.error("Delete task error:", err.response?.data);
