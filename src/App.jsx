@@ -10,6 +10,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import theme from "./theme";
 
 function App() {
+  console.log("VITE_API_URL:", import.meta.env.VITE_API_URL); // Move here
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -38,7 +40,6 @@ function App() {
       </Router>
     </ThemeProvider>
   );
-  console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
 }
 
 export default App;
